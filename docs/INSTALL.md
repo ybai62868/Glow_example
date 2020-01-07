@@ -2,46 +2,72 @@
 
 ### Requirements
 
-- Linux 
-- Python 3.0 + 
-- GCC ( G++ ) 4.8.5 or higher
+- Mac OS Mojave
+
+- Python 3.7 + 
+
+- VLGCC ( G++ ) 4.2.1 or higher
+
 - [Miniconda Linux 64-bit](https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh)
 
-We have tested the following version of OS and software:
+- LLVM@07
 
-- OS:  CentOS Linux release 7.5.1804 (Core)
-- GCC ( G++ ): 4.8.5
-- AWS EC2 Instance: 1.5.0
+  
 
-### Install Samples(DigitRec) on AWS
+### Install Glow from the official github
 
-a. Install HeteroCL from my repo using the aws branch.
+a. Install glow from this repo.
 
 ```shell
-git clone -b aws https://github.com/ybai62868/heterocl.git
+git clone https://github.com/pytorch/glow.git
 ```
 
-b. Clone the aws-fpga tool repository.
+b. Glow depends on a few submodules.
 
 ```shell
-git clone https://github.com/aws/aws-fpga.git 
+git submodule update --init --recursive
 ```
 
-c. Install SDAccel development environment 
+c. Install the requried dependencies using Homebrew.
 
 ```shell
-source envir.sh
+brew install cmake graphviz libpng ninja protobuf wget glog autopep8
+
+brew install llvm@7
 ```
 
-**Note:** You should put the envir.sh outside the aws-fpga folder and envir.sh can be found in `docs folder`.
-
-d. Clone the DigitRec Lab repository.
+d. Create a symbolic link to the Homebrew-installed `clang-*` tools so that the `utils/format.sh` script is able to find them later on.
 
 ```shell
-git clone https://github.com/ybai62868/lab_digitrec_aws.git
+ln -s "/usr/local/opt/llvm@7/bin/clang-format" "/usr/local/bin/clang-format"
+
+ln -s "/usr/local/opt/llvm@7/bin/clang-tidy" "/usr/local/bin/clang-tidy"
 ```
 
-**Note:** The default location for this repo is `/home/centos/src/project_data/lab_digitrec_aws` in AWS. If your folder structure is different, you may need to change the correpsonding paths in some files. But I recommend you use this structure.
+e. Debug configuration (Build debug configuration outside of the source directory `glow`).
+
+```shell
+mkdir build_Debug
+cd build_Debug
+cmake -G Ninja -DCMAKE_BUILD_TYPE=Debug ../glow
+ninja all
+```
+
+**Note:** If you're running Mac OS v10.14 (Mojave) and `ninja all` fails because it can't find headers (e.g. `string.h`), run this command to fix it, and try again.
+
+```shel
+open /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg
+```
+
+f. Release configuration (Build release configuration in the source directory `glow`)
+
+```shell
+cmake ..
+make -j128
+make install 
+```
+
+
 
 
 
