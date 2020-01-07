@@ -62,6 +62,8 @@ open /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10
 f. Release configuration (Build release configuration in the source directory `glow`)
 
 ```shell
+mkdir build
+cd build
 cmake ..
 make -j128
 make install 
