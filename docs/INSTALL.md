@@ -49,7 +49,10 @@ e. Debug configuration (Build debug configuration outside of the source director
 ```shell
 mkdir build_Debug
 cd build_Debug
-cmake -G Ninja -DCMAKE_BUILD_TYPE=Debug ../glow
+cmake -G Ninja ../glow \
+			-DCMAKE_BUILD_TYPE=Debug \
+			-DLLVM_DIR=/usr/local/opt/llvm@7/lib/cmake/llvm
+
 ninja all
 ```
 
